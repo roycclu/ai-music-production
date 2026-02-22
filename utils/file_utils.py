@@ -53,6 +53,24 @@ def load_text(path: Path) -> str:
         return ""
 
 
+def load_prompt(path: Path) -> str | None:
+    """
+    Load a cached prompt string from disk.
+    Returns the prompt text, or None if the file doesn't exist.
+    """
+    try:
+        return path.read_text(encoding="utf-8")
+    except FileNotFoundError:
+        return None
+
+
+def save_prompt(path: Path, content: str) -> None:
+    """Persist a prompt string to disk for caching and human inspection."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8")
+    print(f"[Prompt] {path.relative_to(BASE_DIR)}")
+
+
 # ── Per-stage cache checks ─────────────────────────────────────────────────────
 
 def melody_cache_valid() -> bool:

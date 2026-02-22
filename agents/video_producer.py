@@ -8,7 +8,7 @@ Output folder: Music Video/
 import anthropic
 
 from utils.claude_utils import call_claude, extract_json
-from utils.file_utils import MUSIC_VIDEO_DIR, save_json, save_text
+from utils.file_utils import MUSIC_VIDEO_DIR, load_prompt, save_json, save_prompt, save_text
 from utils.minimax_client import MinimaxClient
 
 # ── System prompt ──────────────────────────────────────────────────────────────
@@ -76,10 +76,14 @@ async def run_video_producer(
     lyrics = song_data.get("lyrics", {})
     brief = production_data.get("production_brief", {})
 
-    # Build the lyrics summary for the prompt
-    lyric_summary = _lyrics_summary(lyrics)
-
-    user_content = f"""Using the complete song package below, create a music video \
+    # ── Prompt cache ───────────────────────────────────────────────────────────
+    cached_user = load_prompt(MUSIC_VIDEO_DIR / "user_prompt.txt")
+    if cached_user is not None:
+        user_content = cached_user
+        print("  [Prompt] Loaded from Music Video/user_prompt.txt")
+    else:
+        lyric_summary = _lyrics_summary(lyrics)
+        user_content = f"""Using the complete song package below, create a music video \
 treatment and a scene for each section.
 
 SONG TITLE:   {song_data.get('title')}
@@ -106,6 +110,8 @@ Make each "prompt" field detailed enough for MiniMax video-01 to generate a \
 compelling 5–6 second clip that captures the scene's emotional truth.
 
 Output as a single JSON object in a ```json code block."""
+        save_prompt(MUSIC_VIDEO_DIR / "system_prompt.txt", SYSTEM_PROMPT)
+        save_prompt(MUSIC_VIDEO_DIR / "user_prompt.txt", user_content)
 
     response_text = await call_claude(
         client=client,

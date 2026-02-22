@@ -8,7 +8,7 @@ Output folder: Vocals/
 import anthropic
 
 from utils.claude_utils import call_claude, extract_json
-from utils.file_utils import VOCALS_DIR, format_lyrics_with_markers, save_json, save_text
+from utils.file_utils import VOCALS_DIR, format_lyrics_with_markers, load_prompt, save_json, save_prompt, save_text
 from utils.minimax_client import MinimaxClient
 
 # ── System prompt ──────────────────────────────────────────────────────────────
@@ -76,7 +76,13 @@ async def run_singer(client: anthropic.AsyncAnthropic, song_data: dict) -> dict:
 
     lyrics_block = format_lyrics_with_markers(song_data)
 
-    user_content = f"""Using the song below, write a detailed vocal performance direction \
+    # ── Prompt cache ───────────────────────────────────────────────────────────
+    cached_user = load_prompt(VOCALS_DIR / "user_prompt.txt")
+    if cached_user is not None:
+        user_content = cached_user
+        print("  [Prompt] Loaded from Vocals/user_prompt.txt")
+    else:
+        user_content = f"""Using the song below, write a detailed vocal performance direction \
 document and construct the MiniMax music-01 API parameters.
 
 SONG TITLE: {song_data.get('title')}
@@ -96,6 +102,8 @@ include the complete lyrics with proper [Section] markers so MiniMax knows \
 where each section begins.
 
 Output as a single JSON object in a ```json code block."""
+        save_prompt(VOCALS_DIR / "system_prompt.txt", SYSTEM_PROMPT)
+        save_prompt(VOCALS_DIR / "user_prompt.txt", user_content)
 
     response_text = await call_claude(
         client=client,

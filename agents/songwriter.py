@@ -8,7 +8,7 @@ Output folder: Melodies/
 import anthropic
 
 from utils.claude_utils import call_claude, extract_json
-from utils.file_utils import MELODIES_DIR, save_json, save_text
+from utils.file_utils import MELODIES_DIR, load_prompt, save_json, save_prompt, save_text
 
 # ── System prompt ──────────────────────────────────────────────────────────────
 
@@ -86,10 +86,21 @@ async def run_songwriter(client: anthropic.AsyncAnthropic) -> dict:
     print("  Writing original song with lyrics and chord structure…")
     print("═" * 60)
 
+    # ── Prompt cache ───────────────────────────────────────────────────────────
+    # Songwriter prompts are static constants, but we persist them to disk so
+    # they can be inspected and (if desired) hand-edited before a --force rerun.
+    cached_user = load_prompt(MELODIES_DIR / "user_prompt.txt")
+    user_to_send = cached_user if cached_user is not None else USER_PROMPT
+    if cached_user is None:
+        save_prompt(MELODIES_DIR / "system_prompt.txt", SYSTEM_PROMPT)
+        save_prompt(MELODIES_DIR / "user_prompt.txt", USER_PROMPT)
+    else:
+        print("  [Prompt] Loaded from Melodies/user_prompt.txt")
+
     response_text = await call_claude(
         client=client,
         system=SYSTEM_PROMPT,
-        user_content=USER_PROMPT,
+        user_content=user_to_send,
         max_tokens=8192,
         label="Songwriter → generating song",
     )

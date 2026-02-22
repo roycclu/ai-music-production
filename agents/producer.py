@@ -8,7 +8,7 @@ Output folder: Songs/
 import anthropic
 
 from utils.claude_utils import call_claude, extract_json
-from utils.file_utils import SONGS_DIR, format_lyrics_with_markers, save_json, save_text
+from utils.file_utils import SONGS_DIR, format_lyrics_with_markers, load_prompt, save_json, save_prompt, save_text
 from utils.minimax_client import MinimaxClient
 
 # ── System prompt ──────────────────────────────────────────────────────────────
@@ -78,7 +78,13 @@ async def run_producer(
     vocal_direction = vocal_data.get("vocal_direction", {})
     lyrics_block = format_lyrics_with_markers(song_data)
 
-    user_content = f"""Using the complete song package below, write a production brief \
+    # ── Prompt cache ───────────────────────────────────────────────────────────
+    cached_user = load_prompt(SONGS_DIR / "user_prompt.txt")
+    if cached_user is not None:
+        user_content = cached_user
+        print("  [Prompt] Loaded from Songs/user_prompt.txt")
+    else:
+        user_content = f"""Using the complete song package below, write a production brief \
 and build the MiniMax music-01 API parameters for the fully produced track.
 
 SONG TITLE:  {song_data.get('title')}
@@ -103,6 +109,8 @@ mixing priorities. The chorus should feel like an Avicii-style euphoric build \
 releasing into something tender — bluegrass authenticity meets progressive house emotion.
 
 Output as a single JSON object in a ```json code block."""
+        save_prompt(SONGS_DIR / "system_prompt.txt", SYSTEM_PROMPT)
+        save_prompt(SONGS_DIR / "user_prompt.txt", user_content)
 
     response_text = await call_claude(
         client=client,
