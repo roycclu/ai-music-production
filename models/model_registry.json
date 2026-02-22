@@ -1,0 +1,38 @@
+[
+  {
+    "id": "deepseek-r1:7b",
+    "display_name": "DeepSeek R1 7B",
+    "provider": "ollama",
+    "size_gb": 4.7,
+    "recommended_for": ["equity_research", "dcf_valuation", "risk_assessment"],
+    "min_ram_gb": 8,
+    "notes": "Default model. Reasoning-optimised — excellent for structured financial logic and multi-step valuation work. Fast enough for interactive use."
+  },
+  {
+    "id": "deepseek-r1:14b",
+    "display_name": "DeepSeek R1 14B",
+    "provider": "ollama",
+    "size_gb": 9.3,
+    "recommended_for": ["equity_research", "dcf_valuation", "investment_thesis"],
+    "min_ram_gb": 16,
+    "notes": "Higher-quality reasoning for complex thesis work and detailed DCF builds. Slower than 7B but noticeably better at multi-step financial analysis."
+  },
+  {
+    "id": "llama3.2:3b",
+    "display_name": "Llama 3.2 3B",
+    "provider": "ollama",
+    "size_gb": 2.0,
+    "recommended_for": ["earnings_analysis", "investment_thesis"],
+    "min_ram_gb": 4,
+    "notes": "Fastest option. Best for quick earnings summaries and draft investment memos where speed matters more than depth."
+  },
+  {
+    "id": "llama3.1:8b",
+    "display_name": "Llama 3.1 8B",
+    "provider": "ollama",
+    "size_gb": 5.0,
+    "recommended_for": ["investment_thesis", "sector_comparison", "earnings_analysis"],
+    "min_ram_gb": 8,
+    "notes": "Well-rounded Llama model. Strong prose quality — great for investment memos and sector comparison narratives."
+  }
+]

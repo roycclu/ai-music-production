@@ -1,0 +1,30 @@
+# API Keys — never commit
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Generated binary media (JSON/text metadata IS tracked; raw audio/video is not)
+*.mp3
+*.wav
+*.aac
+*.flac
+*.ogg
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# IDE / OS
+.DS_Store
+.vscode/
+*.swp
+*.swo
