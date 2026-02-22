@@ -1,15 +1,28 @@
 """
 Agent 3 — Music Producer
 Creates a detailed production brief and generates the fully produced
-track via MiniMax music-01.
+track via MiniMax music-01 (with ElevenLabs fallback).
 Output folder: Songs/
+
+Sub-caching:
+  If Songs/production_brief.json already exists, the Claude call is skipped
+  and the saved brief is reused — only the music generation step runs.
+  Delete production_brief.json to force a fresh Claude call.
 """
 
 import anthropic
 
 from utils.claude_utils import call_claude, extract_json
-from utils.file_utils import SONGS_DIR, format_lyrics_with_markers, load_prompt, save_json, save_prompt, save_text
-from utils.minimax_client import MinimaxClient
+from utils.file_utils import (
+    SONGS_DIR,
+    format_lyrics_with_markers,
+    load_json,
+    load_prompt,
+    save_json,
+    save_prompt,
+    save_text,
+)
+from utils.music_generator import generate_music_with_fallback
 
 # ── System prompt ──────────────────────────────────────────────────────────────
 
@@ -66,9 +79,10 @@ async def run_producer(
     vocal_data: dict,
 ) -> dict:
     """
-    Agent 3: Write a production brief and generate the full track via MiniMax.
+    Agent 3: Write a production brief and generate the full track.
 
-    Returns production_brief dict plus audio_url from MiniMax.
+    Tries MiniMax music-01 first; falls back to ElevenLabs if MiniMax fails.
+    Returns production_brief dict plus audio_url from the successful provider.
     """
     print("\n" + "═" * 60)
     print("  AGENT 3 — MUSIC PRODUCER")
@@ -78,13 +92,20 @@ async def run_producer(
     vocal_direction = vocal_data.get("vocal_direction", {})
     lyrics_block = format_lyrics_with_markers(song_data)
 
-    # ── Prompt cache ───────────────────────────────────────────────────────────
-    cached_user = load_prompt(SONGS_DIR / "user_prompt.txt")
-    if cached_user is not None:
-        user_content = cached_user
-        print("  [Prompt] Loaded from Songs/user_prompt.txt")
+    # ── Sub-cache: reuse Claude output if it already exists ────────────────────
+    brief_file = SONGS_DIR / "production_brief.json"
+    if brief_file.exists():
+        production_data = load_json(brief_file)
+        print("  [Cache] Loaded production brief from Songs/production_brief.json")
+        print("          (delete this file to regenerate via Claude)")
     else:
-        user_content = f"""Using the complete song package below, write a production brief \
+        # ── Prompt cache: reuse or build user prompt ───────────────────────────
+        cached_user = load_prompt(SONGS_DIR / "user_prompt.txt")
+        if cached_user is not None:
+            user_content = cached_user
+            print("  [Prompt] Loaded from Songs/user_prompt.txt")
+        else:
+            user_content = f"""Using the complete song package below, write a production brief \
 and build the MiniMax music-01 API parameters for the fully produced track.
 
 SONG TITLE:  {song_data.get('title')}
@@ -109,30 +130,29 @@ mixing priorities. The chorus should feel like an Avicii-style euphoric build \
 releasing into something tender — bluegrass authenticity meets progressive house emotion.
 
 Output as a single JSON object in a ```json code block."""
-        save_prompt(SONGS_DIR / "system_prompt.txt", SYSTEM_PROMPT)
-        save_prompt(SONGS_DIR / "user_prompt.txt", user_content)
+            save_prompt(SONGS_DIR / "system_prompt.txt", SYSTEM_PROMPT)
+            save_prompt(SONGS_DIR / "user_prompt.txt", user_content)
 
-    response_text = await call_claude(
-        client=client,
-        system=SYSTEM_PROMPT,
-        user_content=user_content,
-        max_tokens=8192,
-        label="Producer → production brief + MiniMax API params",
-    )
+        response_text = await call_claude(
+            client=client,
+            system=SYSTEM_PROMPT,
+            user_content=user_content,
+            max_tokens=8192,
+            label="Producer → production brief + MiniMax API params",
+        )
 
-    production_data = extract_json(response_text)
+        production_data = extract_json(response_text)
 
-    # ── Persist outputs ────────────────────────────────────────────────────────
-    save_json(SONGS_DIR / "production_brief.json", production_data)
-    save_text(SONGS_DIR / "production_brief.md", _format_brief_md(production_data, song_data))
-    save_json(SONGS_DIR / "minimax_params.json", production_data.get("minimax_api_params", {}))
+        # Persist Claude outputs
+        save_json(SONGS_DIR / "production_brief.json", production_data)
+        save_text(SONGS_DIR / "production_brief.md", _format_brief_md(production_data, song_data))
+        save_json(SONGS_DIR / "minimax_params.json", production_data.get("minimax_api_params", {}))
 
-    # ── MiniMax music-01 call ──────────────────────────────────────────────────
-    print("\n[Agent 3] Calling MiniMax music-01 for full track generation…")
-    minimax = MinimaxClient()
+    # ── Music generation (MiniMax → ElevenLabs fallback) ──────────────────────
+    print("\n[Agent 3] Generating full track (MiniMax → ElevenLabs fallback)…")
     api_params = production_data.get("minimax_api_params", {})
 
-    music_result = await minimax.generate_music(
+    music_result = await generate_music_with_fallback(
         lyrics=api_params.get("lyrics", lyrics_block),
         vocal_style=api_params.get(
             "vocal_style",
@@ -141,6 +161,8 @@ Output as a single JSON object in a ```json code block."""
         genre=api_params.get("genre", "folk-electronic"),
         bpm=song_data.get("bpm"),
         key=song_data.get("key"),
+        output_dir=SONGS_DIR,
+        filename="full_track",
     )
 
     audio_url = (

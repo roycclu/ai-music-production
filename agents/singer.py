@@ -1,15 +1,28 @@
 """
 Agent 2 — Singer / Vocal Director
 Creates a detailed vocal performance direction document and generates
-the vocal track via MiniMax music-01.
+the vocal track via MiniMax music-01 (with ElevenLabs fallback).
 Output folder: Vocals/
+
+Sub-caching:
+  If Vocals/vocal_direction.json already exists, the Claude call is skipped
+  and the saved direction is reused — only the music generation step runs.
+  Delete vocal_direction.json to force a fresh Claude call.
 """
 
 import anthropic
 
 from utils.claude_utils import call_claude, extract_json
-from utils.file_utils import VOCALS_DIR, format_lyrics_with_markers, load_prompt, save_json, save_prompt, save_text
-from utils.minimax_client import MinimaxClient
+from utils.file_utils import (
+    VOCALS_DIR,
+    format_lyrics_with_markers,
+    load_json,
+    load_prompt,
+    save_json,
+    save_prompt,
+    save_text,
+)
+from utils.music_generator import generate_music_with_fallback
 
 # ── System prompt ──────────────────────────────────────────────────────────────
 
@@ -65,9 +78,10 @@ ALWAYS output a single JSON object in a ```json code block.
 
 async def run_singer(client: anthropic.AsyncAnthropic, song_data: dict) -> dict:
     """
-    Agent 2: Generate vocal direction and create the vocal track via MiniMax.
+    Agent 2: Generate vocal direction and create the vocal track.
 
-    Returns the vocal_direction dict plus audio_url from MiniMax.
+    Tries MiniMax music-01 first; falls back to ElevenLabs if MiniMax fails.
+    Returns the vocal_direction dict plus audio_url from the successful provider.
     """
     print("\n" + "═" * 60)
     print("  AGENT 2 — SINGER / VOCAL DIRECTOR")
@@ -76,13 +90,20 @@ async def run_singer(client: anthropic.AsyncAnthropic, song_data: dict) -> dict:
 
     lyrics_block = format_lyrics_with_markers(song_data)
 
-    # ── Prompt cache ───────────────────────────────────────────────────────────
-    cached_user = load_prompt(VOCALS_DIR / "user_prompt.txt")
-    if cached_user is not None:
-        user_content = cached_user
-        print("  [Prompt] Loaded from Vocals/user_prompt.txt")
+    # ── Sub-cache: reuse Claude output if it already exists ────────────────────
+    direction_file = VOCALS_DIR / "vocal_direction.json"
+    if direction_file.exists():
+        vocal_data = load_json(direction_file)
+        print("  [Cache] Loaded vocal direction from Vocals/vocal_direction.json")
+        print("          (delete this file to regenerate via Claude)")
     else:
-        user_content = f"""Using the song below, write a detailed vocal performance direction \
+        # ── Prompt cache: reuse or build user prompt ───────────────────────────
+        cached_user = load_prompt(VOCALS_DIR / "user_prompt.txt")
+        if cached_user is not None:
+            user_content = cached_user
+            print("  [Prompt] Loaded from Vocals/user_prompt.txt")
+        else:
+            user_content = f"""Using the song below, write a detailed vocal performance direction \
 document and construct the MiniMax music-01 API parameters.
 
 SONG TITLE: {song_data.get('title')}
@@ -102,35 +123,36 @@ include the complete lyrics with proper [Section] markers so MiniMax knows \
 where each section begins.
 
 Output as a single JSON object in a ```json code block."""
-        save_prompt(VOCALS_DIR / "system_prompt.txt", SYSTEM_PROMPT)
-        save_prompt(VOCALS_DIR / "user_prompt.txt", user_content)
+            save_prompt(VOCALS_DIR / "system_prompt.txt", SYSTEM_PROMPT)
+            save_prompt(VOCALS_DIR / "user_prompt.txt", user_content)
 
-    response_text = await call_claude(
-        client=client,
-        system=SYSTEM_PROMPT,
-        user_content=user_content,
-        max_tokens=8192,
-        label="Singer → vocal direction + MiniMax prompt",
-    )
+        response_text = await call_claude(
+            client=client,
+            system=SYSTEM_PROMPT,
+            user_content=user_content,
+            max_tokens=8192,
+            label="Singer → vocal direction + MiniMax prompt",
+        )
 
-    vocal_data = extract_json(response_text)
+        vocal_data = extract_json(response_text)
 
-    # ── Persist outputs ────────────────────────────────────────────────────────
-    save_json(VOCALS_DIR / "vocal_direction.json", vocal_data)
-    save_text(VOCALS_DIR / "vocal_direction.md", _format_direction_md(vocal_data, song_data))
-    save_json(VOCALS_DIR / "minimax_params.json", vocal_data.get("minimax_prompt", {}))
+        # Persist Claude outputs
+        save_json(VOCALS_DIR / "vocal_direction.json", vocal_data)
+        save_text(VOCALS_DIR / "vocal_direction.md", _format_direction_md(vocal_data, song_data))
+        save_json(VOCALS_DIR / "minimax_params.json", vocal_data.get("minimax_prompt", {}))
 
-    # ── MiniMax music-01 call ──────────────────────────────────────────────────
-    print("\n[Agent 2] Calling MiniMax music-01 for vocal track generation…")
-    minimax = MinimaxClient()
+    # ── Music generation (MiniMax → ElevenLabs fallback) ──────────────────────
+    print("\n[Agent 2] Generating vocal track (MiniMax → ElevenLabs fallback)…")
     mp = vocal_data.get("minimax_prompt", {})
 
-    music_result = await minimax.generate_music(
+    music_result = await generate_music_with_fallback(
         lyrics=mp.get("lyrics", lyrics_block),
         vocal_style=mp.get("vocal_style", "soulful folk tenor with aching bluegrass warmth"),
         genre=mp.get("genre", "folk-soul"),
         bpm=song_data.get("bpm"),
         key=song_data.get("key"),
+        output_dir=VOCALS_DIR,
+        filename="vocal_track",
     )
 
     audio_url = (

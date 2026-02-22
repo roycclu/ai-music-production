@@ -222,11 +222,24 @@ def _print_cache_hit(label: str, files: str) -> None:
 def _print_banner(force: bool = False) -> None:
     demo = os.getenv("DEMO_MODE", "false").upper()
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    has_minimax = bool(os.getenv("MINIMAX_API_KEY"))
+    has_elevenlabs = bool(os.getenv("ELEVENLABS_API_KEY"))
+
+    if has_minimax and has_elevenlabs:
+        music_providers = "MiniMax (primary) → ElevenLabs (fallback)"
+    elif has_minimax:
+        music_providers = "MiniMax only (add ELEVENLABS_API_KEY for fallback)"
+    elif has_elevenlabs:
+        music_providers = "ElevenLabs only (MINIMAX_API_KEY not set)"
+    else:
+        music_providers = "demo mode (no API keys configured)"
+
     print("\n" + "═" * 60)
     print("  MULTI-AGENT MUSIC VIDEO PRODUCTION PIPELINE")
     print("═" * 60)
     print(f"  Started:   {ts}")
     print(f"  Model:     claude-opus-4-6 (adaptive thinking)")
+    print(f"  Music:     {music_providers}")
     print(f"  Demo mode: {demo}")
     print(f"  Cache:     {'DISABLED (--force)' if force else 'enabled — skips completed stages'}")
     print("═" * 60 + "\n")
@@ -238,10 +251,22 @@ def _check_env() -> None:
             "[ERROR] ANTHROPIC_API_KEY is not set.\n"
             "Copy .env.example → .env and add your key."
         )
-    if not os.getenv("MINIMAX_API_KEY"):
+    has_minimax = bool(os.getenv("MINIMAX_API_KEY"))
+    has_elevenlabs = bool(os.getenv("ELEVENLABS_API_KEY"))
+    if not has_minimax and not has_elevenlabs:
         print(
-            "[WARNING] MINIMAX_API_KEY not set — MiniMax calls will run in "
-            "demo mode (no real audio/video generated).\n"
+            "[WARNING] Neither MINIMAX_API_KEY nor ELEVENLABS_API_KEY is set — "
+            "music generation will run in demo mode (no real audio generated).\n"
+        )
+    elif not has_minimax:
+        print(
+            "[INFO] MINIMAX_API_KEY not set — music generation will use "
+            "ElevenLabs only (no MiniMax fallback).\n"
+        )
+    elif not has_elevenlabs:
+        print(
+            "[INFO] ELEVENLABS_API_KEY not set — if MiniMax fails, the pipeline "
+            "will stop (no ElevenLabs fallback available).\n"
         )
 
 

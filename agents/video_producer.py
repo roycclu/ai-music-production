@@ -3,12 +3,27 @@ Agent 4 — Music Video Producer
 Creates a scene-by-scene visual treatment and generates each video clip
 via MiniMax video-01.
 Output folder: Music Video/
+
+Sub-caching:
+  If Music Video/video_brief.json already exists, the Claude call is skipped
+  and the saved treatment is reused.  Delete video_brief.json to regenerate.
+
+  Individual scenes are also cached: if scene_XX_<section>.json already exists
+  for a given scene, that clip generation is skipped.  Delete specific scene
+  files to regenerate only those clips.
 """
 
 import anthropic
 
 from utils.claude_utils import call_claude, extract_json
-from utils.file_utils import MUSIC_VIDEO_DIR, load_prompt, save_json, save_prompt, save_text
+from utils.file_utils import (
+    MUSIC_VIDEO_DIR,
+    load_json,
+    load_prompt,
+    save_json,
+    save_prompt,
+    save_text,
+)
 from utils.minimax_client import MinimaxClient
 
 # ── System prompt ──────────────────────────────────────────────────────────────
@@ -67,6 +82,7 @@ async def run_video_producer(
     Agent 4: Write the video treatment and generate each scene via MiniMax video-01.
 
     Returns the video brief dict with scene_results including per-scene video URLs.
+    Individual scenes that already have a saved JSON file are skipped.
     """
     print("\n" + "═" * 60)
     print("  AGENT 4 — MUSIC VIDEO PRODUCER")
@@ -76,14 +92,22 @@ async def run_video_producer(
     lyrics = song_data.get("lyrics", {})
     brief = production_data.get("production_brief", {})
 
-    # ── Prompt cache ───────────────────────────────────────────────────────────
-    cached_user = load_prompt(MUSIC_VIDEO_DIR / "user_prompt.txt")
-    if cached_user is not None:
-        user_content = cached_user
-        print("  [Prompt] Loaded from Music Video/user_prompt.txt")
+    # ── Sub-cache: reuse Claude output if it already exists ────────────────────
+    brief_file = MUSIC_VIDEO_DIR / "video_brief.json"
+    if brief_file.exists():
+        video_data = load_json(brief_file)
+        scenes = video_data.get("scenes", [])
+        print("  [Cache] Loaded video brief from Music Video/video_brief.json")
+        print("          (delete this file to regenerate via Claude)")
     else:
-        lyric_summary = _lyrics_summary(lyrics)
-        user_content = f"""Using the complete song package below, create a music video \
+        # ── Prompt cache: reuse or build user prompt ───────────────────────────
+        cached_user = load_prompt(MUSIC_VIDEO_DIR / "user_prompt.txt")
+        if cached_user is not None:
+            user_content = cached_user
+            print("  [Prompt] Loaded from Music Video/user_prompt.txt")
+        else:
+            lyric_summary = _lyrics_summary(lyrics)
+            user_content = f"""Using the complete song package below, create a music video \
 treatment and a scene for each section.
 
 SONG TITLE:   {song_data.get('title')}
@@ -110,26 +134,26 @@ Make each "prompt" field detailed enough for MiniMax video-01 to generate a \
 compelling 5–6 second clip that captures the scene's emotional truth.
 
 Output as a single JSON object in a ```json code block."""
-        save_prompt(MUSIC_VIDEO_DIR / "system_prompt.txt", SYSTEM_PROMPT)
-        save_prompt(MUSIC_VIDEO_DIR / "user_prompt.txt", user_content)
+            save_prompt(MUSIC_VIDEO_DIR / "system_prompt.txt", SYSTEM_PROMPT)
+            save_prompt(MUSIC_VIDEO_DIR / "user_prompt.txt", user_content)
 
-    response_text = await call_claude(
-        client=client,
-        system=SYSTEM_PROMPT,
-        user_content=user_content,
-        max_tokens=8192,
-        label="Video Director → visual treatment + shot list",
-    )
+        response_text = await call_claude(
+            client=client,
+            system=SYSTEM_PROMPT,
+            user_content=user_content,
+            max_tokens=8192,
+            label="Video Director → visual treatment + shot list",
+        )
 
-    video_data = extract_json(response_text)
-    scenes = video_data.get("scenes", [])
+        video_data = extract_json(response_text)
+        scenes = video_data.get("scenes", [])
 
-    # ── Save treatment and shot list ───────────────────────────────────────────
-    save_json(MUSIC_VIDEO_DIR / "video_brief.json", video_data)
-    save_text(MUSIC_VIDEO_DIR / "treatment.md", _format_treatment_md(video_data, song_data))
-    save_json(MUSIC_VIDEO_DIR / "shot_list.json", scenes)
+        # Persist Claude outputs
+        save_json(MUSIC_VIDEO_DIR / "video_brief.json", video_data)
+        save_text(MUSIC_VIDEO_DIR / "treatment.md", _format_treatment_md(video_data, song_data))
+        save_json(MUSIC_VIDEO_DIR / "shot_list.json", scenes)
 
-    # ── Generate each scene via MiniMax video-01 ───────────────────────────────
+    # ── Generate each scene via MiniMax video-01 (per-scene cache) ────────────
     print(f"\n[Agent 4] Generating {len(scenes)} video scene(s) via MiniMax video-01…\n")
     minimax = MinimaxClient()
     scene_results = []
@@ -137,14 +161,24 @@ Output as a single JSON object in a ```json code block."""
     for idx, scene in enumerate(scenes, start=1):
         section = scene.get("section", f"scene_{idx}")
         label = scene.get("section_label", section)
+        safe_section = section.replace(" ", "_")
+        scene_file = MUSIC_VIDEO_DIR / f"scene_{idx:02d}_{safe_section}.json"
+
+        # ── Per-scene sub-cache ────────────────────────────────────────────────
+        if scene_file.exists():
+            existing = load_json(scene_file)
+            scene_results.append(existing)
+            print(f"  Scene {idx}/{len(scenes)}: {label} — loaded from cache")
+            print(f"  → {existing.get('video_url', 'N/A')}\n")
+            continue
+
         prompt = scene.get("prompt", "")
         desired_duration = scene.get("duration_seconds", 5)
 
         print(f"  Scene {idx}/{len(scenes)}: {label}")
         print(f"  Prompt excerpt: {prompt[:80]}…")
 
-        # MiniMax video-01 typically caps individual clip duration at ~5–6 s.
-        # We request the minimum of desired_duration and 6 s per clip.
+        # MiniMax video-01 caps individual clip duration at ~5–6 s.
         clip_duration = min(desired_duration, 6)
 
         video_result = await minimax.generate_video(
@@ -160,21 +194,20 @@ Output as a single JSON object in a ```json code block."""
         )
 
         scene_result = {
-            "scene_number":   idx,
-            "section":        section,
-            "section_label":  label,
-            "prompt":         prompt,
+            "scene_number":    idx,
+            "section":         section,
+            "section_label":   label,
+            "prompt":          prompt,
             "duration_seconds": desired_duration,
-            "clip_duration":  clip_duration,
+            "clip_duration":   clip_duration,
             "camera_movement": scene.get("camera_movement", ""),
-            "mood":           scene.get("mood", ""),
-            "color_grade":    scene.get("color_grade", ""),
-            "video_url":      video_url,
+            "mood":            scene.get("mood", ""),
+            "color_grade":     scene.get("color_grade", ""),
+            "video_url":       video_url,
         }
         scene_results.append(scene_result)
 
-        safe_section = section.replace(" ", "_")
-        save_json(MUSIC_VIDEO_DIR / f"scene_{idx:02d}_{safe_section}.json", scene_result)
+        save_json(scene_file, scene_result)
         save_text(MUSIC_VIDEO_DIR / f"scene_{idx:02d}_{safe_section}_url.txt", video_url)
         print(f"  → {video_url}\n")
 
@@ -217,7 +250,6 @@ def _lyrics_summary(lyrics: dict) -> str:
     for key, label in section_order:
         text = lyrics.get(key, "").strip()
         if text:
-            # Just the first two lines per section to keep prompt concise
             snippet = "\n".join(text.splitlines()[:2])
             parts.append(f"[{label}]\n{snippet}")
     return "\n\n".join(parts)
