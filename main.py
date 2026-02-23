@@ -60,13 +60,26 @@ load_dotenv()
 
 # ── Orchestrator ───────────────────────────────────────────────────────────────
 
-async def main(force: bool = False) -> dict:
+async def main(
+    force: bool = False,
+    force_song: bool = False,
+    force_video: bool = False,
+    interactive: bool = True,
+) -> dict:
     """
     Main pipeline orchestrator.
 
     Runs all four agents sequentially, passing each agent's output as
     context to the next. Each stage is skipped if its output files already
-    exist on disk (cache hit). Pass force=True to regenerate everything.
+    exist on disk (cache hit).
+
+    Args:
+        force:        Regenerate all four stages regardless of cache.
+        force_song:   Regenerate agents 1–3 (songwriter, singer, producer).
+        force_video:  Regenerate agent 4 (video producer).
+        interactive:  When True (default), prompt the user before each cached
+                      stage so they can choose to regenerate selectively.
+                      Ignored when force=True.
 
     Returns the compiled final deliverable package.
     """
@@ -75,10 +88,19 @@ async def main(force: bool = False) -> dict:
     create_output_dirs()
     setup_observability()
 
+    # ── Interactive selective-regeneration prompts ─────────────────────────────
+    if not force and interactive:
+        _force_song, _force_video = _prompt_regeneration()
+        force_song  = force_song  or _force_song
+        force_video = force_video or _force_video
+
+    redo_song  = force or force_song
+    redo_video = force or force_video
+
     client = anthropic.AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
     # ── Agent 1 — Songwriter ───────────────────────────────────────────────────
-    if not force and melody_cache_valid():
+    if not redo_song and melody_cache_valid():
         song_data = load_melody_cache()
         _print_cache_hit("Agent 1 — Songwriter", "Melodies/song_structure.json")
     else:
@@ -94,7 +116,7 @@ async def main(force: bool = False) -> dict:
         )
 
     # ── Agent 2 — Singer ──────────────────────────────────────────────────────
-    if not force and vocals_cache_valid():
+    if not redo_song and vocals_cache_valid():
         vocal_data = load_vocals_cache()
         _print_cache_hit("Agent 2 — Singer", "Vocals/vocal_direction.json + audio_url.txt")
     else:
@@ -109,7 +131,7 @@ async def main(force: bool = False) -> dict:
         )
 
     # ── Agent 3 — Music Producer ───────────────────────────────────────────────
-    if not force and production_cache_valid():
+    if not redo_song and production_cache_valid():
         production_data = load_production_cache()
         _print_cache_hit("Agent 3 — Music Producer", "Songs/production_brief.json + audio_url.txt")
     else:
@@ -124,7 +146,7 @@ async def main(force: bool = False) -> dict:
         )
 
     # ── Agent 4 — Music Video Producer ────────────────────────────────────────
-    if not force and video_cache_valid():
+    if not redo_video and video_cache_valid():
         video_data = load_video_cache()
         _print_cache_hit("Agent 4 — Music Video Producer", "Music Video/video_brief.json + final_video_urls.json")
     else:
@@ -211,6 +233,49 @@ def _compile_package(
             "Music Video": str(MUSIC_VIDEO_DIR),
         },
     }
+
+
+def _prompt_regeneration() -> tuple[bool, bool]:
+    """
+    Ask the user whether to regenerate the song and/or music video.
+
+    Only prompts for stages that already have cached output — there is no
+    point asking "redo?" when nothing has been produced yet.
+
+    Returns:
+        (force_song, force_video) — True means regenerate that group.
+    """
+    song_cached  = melody_cache_valid() or vocals_cache_valid() or production_cache_valid()
+    video_cached = video_cache_valid()
+
+    if not song_cached and not video_cached:
+        return False, False  # nothing cached — just generate everything
+
+    print("─" * 60)
+    print("  PRODUCTION OPTIONS")
+    print("─" * 60)
+
+    force_song = False
+    if song_cached:
+        cached = []
+        if melody_cache_valid():
+            cached.append("Melodies")
+        if vocals_cache_valid():
+            cached.append("Vocals")
+        if production_cache_valid():
+            cached.append("Songs")
+        print(f"  Song cached:   {' + '.join(cached)}/")
+        ans = input("  Reproduce song (agents 1-3)?      [y/N] ").strip().lower()
+        force_song = ans in ("y", "yes")
+
+    force_video = False
+    if video_cached:
+        print("  Video cached:  Music Video/")
+        ans = input("  Reproduce music video (agent 4)?  [y/N] ").strip().lower()
+        force_video = ans in ("y", "yes")
+
+    print("─" * 60 + "\n")
+    return force_song, force_video
 
 
 def _print_cache_hit(label: str, files: str) -> None:
@@ -318,5 +383,10 @@ if __name__ == "__main__":
         action="store_true",
         help="Ignore cached outputs and regenerate every stage from scratch",
     )
+    parser.add_argument(
+        "--no-interactive",
+        action="store_true",
+        help="Skip prompts and use cached outputs without asking (useful for scripts/CI)",
+    )
     args = parser.parse_args()
-    asyncio.run(main(force=args.force))
+    asyncio.run(main(force=args.force, interactive=not args.no_interactive))
