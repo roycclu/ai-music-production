@@ -3,6 +3,8 @@
 ## 2026-02-23
 Added Arize Phoenix tracing (utils/observability.py). All Anthropic API calls are now traced to the 'music-video-pipeline' project at http://localhost:6006. setup_observability() is called once at pipeline startup in main.py before the Anthropic client is created.
 
+Fixed music generation providers to produce actual music instead of TTS voiceovers. ElevenLabs now calls /v1/music (song generation with style prompt + lyrics) with /v1/sound-generation as fallback; the previous /v1/text-to-speech approach was removed entirely. Added AudioCraft (utils/audiocraft_client.py) as a local offline option using Meta's MusicGen model — no API key required, configurable via AUDIOCRAFT_MODEL / AUDIOCRAFT_DEVICE / AUDIOCRAFT_DURATION. Added MUSIC_PROVIDER env var (comma-separated list: minimax, elevenlabs, audiocraft, demo) to control provider order explicitly; falls back to API-key-based auto-detection when unset.
+
 ## 2026-02-22
 Init: Added git version control, CHANGES.md session log, and smart cache layer. Pipeline now skips re-generating Melodies/Vocals/Songs/Video when output files already exist. Pass `--force` to regenerate everything from scratch.
 
