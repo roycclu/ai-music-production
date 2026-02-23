@@ -144,12 +144,13 @@ def format_lyrics_with_markers(song_data: dict) -> str:
     MiniMax music-01 and by human readers.
     """
     lyrics = song_data.get("lyrics", {})
+    # MiniMax music-2.5 valid structure tags (no hyphens, no numbered sections)
     section_map = [
-        ("verse_1",    "[Verse 1]"),
-        ("pre_chorus", "[Pre-Chorus]"),
+        ("verse_1",    "[Verse]"),
+        ("pre_chorus", "[Pre Chorus]"),
         ("chorus",     "[Chorus]"),
-        ("verse_2",    "[Verse 2]"),
-        ("pre_chorus", "[Pre-Chorus]"),
+        ("verse_2",    "[Verse]"),
+        ("pre_chorus", "[Pre Chorus]"),
         ("chorus",     "[Chorus]"),
         ("bridge",     "[Bridge]"),
         ("outro",      "[Outro]"),

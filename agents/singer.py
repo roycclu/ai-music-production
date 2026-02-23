@@ -61,7 +61,7 @@ ALWAYS output a single JSON object in a ```json code block.
     }
   },
   "minimax_prompt": {
-    "lyrics": "Full lyrics with [Verse 1] [Pre-Chorus] [Chorus] etc. markers",
+    "lyrics": "Full lyrics with [Verse] [Pre Chorus] [Chorus] [Bridge] [Outro] markers (MiniMax valid tags only — no hyphens, no numbered sections)",
     "vocal_style": "Concise vocal style string for MiniMax API",
     "genre": "folk-soul",
     "mood": "bittersweet-hopeful",
