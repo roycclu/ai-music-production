@@ -36,6 +36,7 @@ from agents.songwriter import run_songwriter
 from agents.singer import run_singer
 from agents.producer import run_producer
 from agents.video_producer import run_video_producer
+from utils.observability import setup_observability
 from utils.file_utils import (
     BASE_DIR,
     MELODIES_DIR,
@@ -72,6 +73,7 @@ async def main(force: bool = False) -> dict:
     _print_banner(force)
     _check_env()
     create_output_dirs()
+    setup_observability()
 
     client = anthropic.AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
