@@ -133,9 +133,15 @@ class ElevenLabsClient:
         Duration is capped at 22 s (API limit). Used as internal fallback when
         the /v1/music endpoint is unavailable.
         """
+        # Normalise: collapse all whitespace (newlines, tabs, etc.) to spaces
+        # and truncate to 450 chars so the API accepts it.  Claude's vocal_style
+        # descriptions can be long and multi-line; the sound-generation endpoint
+        # returns 400 when the text field contains embedded newlines or is too long.
+        safe_text = " ".join(description.split())[:450]
+
         url = f"{ELEVENLABS_BASE_URL}/v1/sound-generation"
         payload = {
-            "text": description,
+            "text": safe_text,
             "duration_seconds": min(duration_seconds, 22.0),
             "prompt_influence": 0.5,
         }

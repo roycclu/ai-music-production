@@ -1,0 +1,122 @@
+Using the complete song package below, write a production brief and build the MiniMax music-01 API parameters for the fully produced track.
+
+SONG TITLE:  The Good Still Burning
+KEY: A major  |  BPM: 94  |  TIME: 4/4
+
+CHORD CHART:
+All chords notated per bar (4 beats each). Capo optional at 2nd fret to play in G shapes.
+
+=== INTRO (4 bars — fingerpicked, let notes ring) ===
+| A        | E/G#     | F#m7     | Dsus2    |
+
+=== VERSE 1 (16 bars — two passes of the 8-bar pattern) ===
+| A        | E/G#     | F#m7     | Dsus2    |
+| A        | E/G#     | Dsus2    | E        |
+| A        | E/G#     | F#m7     | Dsus2    |
+| A        | E/G#     | Dsus2    | E        |
+
+=== PRE-CHORUS (8 bars — bring in light palm-muted strum) ===
+| F#m7     | Dsus2    | A        | E        |
+| F#m7     | Dsus2    | Esus4    | E        |
+
+=== CHORUS (16 bars — open strumming, full voice) ===
+| A        | E/G#     | F#m7     | Dsus2    |
+| A        | E/G#     | Dsus2    | E        |
+| F#m7     | Dsus2    | A        | E/G#     |
+| Dsus2    | Esus4  E | A        | A        |
+
+=== VERSE 2 (16 bars — same as Verse 1, add subtle bass walk) ===
+| A        | E/G#     | F#m7     | Dsus2    |
+| A        | E/G#     | Dsus2    | E        |
+| A        | E/G#     | F#m7     | Dsus2    |
+| A        | E/G#     | Dsus2    | E        |
+
+=== PRE-CHORUS 2 (8 bars) ===
+| F#m7     | Dsus2    | A        | E        |
+| F#m7     | Dsus2    | Esus4    | E        |
+
+=== CHORUS 2 (16 bars — same as Chorus 1, stronger dynamics) ===
+| A        | E/G#     | F#m7     | Dsus2    |
+| A        | E/G#     | Dsus2    | E        |
+| F#m7     | Dsus2    | A        | E/G#     |
+| Dsus2    | Esus4  E | A        | A        |
+
+=== BRIDGE (8 bars — strip to bare fingerpicking, vocals exposed) ===
+| Dsus2    | A/C#     | F#m7     | E        |
+| Dsus2    | A/C#     | Esus4    | E        |
+
+=== OUTRO (12 bars — gentle strum fading to fingerpick, ritardando final 4 bars) ===
+| A        | E/G#     | F#m7     | Dsus2    |
+| A        | E/G#     | F#m7     | Dsus2    |
+| A        | E/G#     | Dsus2    | A        |
+
+VOCAL STYLE:   A slow-burning Americana-soul hybrid that lives in the liminal space between bluegrass porch-song intimacy and deep-groove soul balladry. The vocal production should feel close and unhurried — like a voice captured three feet from a single condenser mic on a warm evening, with just enough room tone to feel alive. No auto-tune, no pitch correction — every scoop, every grain, every micro-crack is the performance. The overall arc moves from whispered storytelling through full-chested gratitude into raw emotional exposure, then resolves in a bittersweet glow. Think of the vocal as golden hour itself: warm, long-shadowed, luminous, and quietly aware that the light is temporary.
+LEAD VOICE:    Raw, aching bluegrass tenor rooted in the Dan Tyminski school — nasal resonance in the mid-range, natural Appalachian grain on vowels, a slight pinch on high notes that sounds like longing made audible. Fused with the soulful, round, chest-forward warmth of Aloe Blacc — open throat, relaxed jaw, a tone that vibrates with sincerity rather than showmanship. The voice should sit in a low-mid tenor range for verses (roughly A2–D4), opening up through D4–F#4 on choruses. Vibrato is earned, not default: it appears only on sustained words at emotional peaks ('burning,' 'gold,' 'hold,' 'amen'). The grain and grit should feel like something physical — dust, woodsmoke, calloused hands. Never polished, always deeply human.
+HARMONIES:     Chorus harmonies should evoke an intimate family choir — not a Nashville vocal section, but three people who love each other singing together on a porch. Stack a low third (F#3 area, warm alto/low tenor) and a high fifth (C#4–E4, airy soprano/high tenor) beneath and above the lead melody. The harmonies should enter on the second line of Chorus 1 ('Let the reel keep turning') and build through the section — by 'the good's still burning gold,' all three parts are present and ringing. Chorus 2 harmonies enter from the very first line and are fuller throughout, with the high harmony occasionally drifting to a sixth for emotional color on 'moment that the years will ache to hold.' In the Bridge, strip all harmonies — lead voice only, completely exposed. On 'amen,' a single unison voice joins the lead (same pitch, different timbre — imagine a wife's voice beside the singer), held for two beats, then silence. The Outro reintroduces harmonies gently: 'we were golden, we were golden' should be in close two-part harmony (thirds), imperfect and warm, with the two voices slightly different in timing — one arriving a split-second after the other, like an echo of memory. The final whispered 'And the good's still burning' is lead voice alone, no harmony, no reverb — just a human voice and silence.
+DYNAMICS:      The song's dynamic arc is a slow bloom, a full flowering, a stripping bare, and a gentle fade. Verse 1 sits at approximately mp (mezzo-piano) — intimate, close, almost whispered on 'peace in my chest.' Pre-Chorus rises to mf with a sense of gentle urgency. Chorus 1 blooms to a warm f (forte) but deliberately holds 20% in reserve — the singer knows there's more to give but isn't ready yet. Verse 2 returns to mp but with a slightly warmer, more resonant bottom end — the bass walk in the guitar mirrors a deepening in the vocal chest tone. Pre-Chorus 2 pushes to mf+ with more open vowels and forward placement. Chorus 2 is the full ff peak — the voice opens completely, the vibrato widens, the harmonies stack fully, and 'the good's still burning gold' rings with the conviction of a man shouting gratitude into the dusk. The Bridge drops dramatically to pp (pianissimo) — voice stripped bare, nearly speaking, letting cracks show. 'Amen' is delivered at the very threshold of singing and whispering. The Outro begins at mp, rises briefly to mf on 'we were golden,' then gradually diminishes through p to pp on the final 'And the good's still burning' — the voice pulling away like someone walking slowly into the dark, still singing.
+
+SONGWRITER NOTES:
+OVERALL FEEL: Think a slow-burning Americana soul ballad — Jason Isbell meets Aloe Blacc around a campfire. The song should feel like golden hour sounds.
+
+GUITAR: Fingerpick verses using Travis-style thumb on bass notes (A and E strings) with index and middle pulling the melody on upper strings. Transition to an open folk strum on the chorus — not aggressive, more like a heartbeat gaining confidence. Bridge returns to naked fingerpicking.
+
+E/G# VOICING: Use 4x245x — the bass walk from A down to G# down to F# in the verse creates the emotional gravity of the whole song. Don't rush it.
+
+DYNAMIC ARC: Intro and Verse 1 are intimate and close-mic'd. Pre-chorus builds gently with palm-muted strumming. Chorus 1 blooms but still holds back 20%. Verse 2 adds a low bass walk and maybe a subtle kick. Chorus 2 is the full-hearted peak. Bridge strips everything to just voice and guitar — exposed, almost whispered. The word 'amen' should hang in silence for a beat. Outro rebuilds warmth then gradually pulls away like the end of a long evening.
+
+VOCAL APPROACH: Verse 1 in a conversational, husky low-mid tenor (think Tyminski's quieter moments). Let the bluegrass grain show on words like 'screen,' 'jars,' 'chest.' Chorus opens into the Aloe Blacc soulful warmth — rounder, fuller, with gentle vibrato on 'burning' and 'gold.' Bridge should be the most emotionally raw moment — voice nearly cracking on 'amen.' Outro shifts to past tense ('we were golden') and the voice should sound like someone smiling through tears.
+
+ESTIMATED DURATION: Approximately 3 minutes 50 seconds at 94 BPM with natural breath and transitions.
+
+LYRICS:
+[Verse]
+The porch light's pulling moths against the screen
+Your mother's singing something only summer means
+The kids are catching fireflies in mason jars
+And the yard feels bigger underneath the stars
+I got dirt on my hands and peace in my chest
+And this whole spinning world has come to rest
+
+[Chorus]
+Let the good stay burning
+Let the reel keep turning
+We're alive inside a moment that the years will ache to hold
+Let the porch light flicker
+Let the dark come slower
+I'm standing in the center of the best thing that I know
+And the good's still burning gold
+
+[Verse]
+Your daughter's got your grandma's crooked grin
+She's spinning in the grass like a prayer on the wind
+The radio's playing from the open truck
+And every note sounds holy, every chord sounds struck
+I wanna press my thumb into the face of the clock
+And tell the hours you can go ahead and stop
+
+[Chorus]
+Let the good stay burning
+Let the reel keep turning
+We're alive inside a moment that the years will ache to hold
+Let the porch light flicker
+Let the dark come slower
+I'm standing in the center of the best thing that I know
+And the good's still burning gold
+
+[Bridge]
+One day I'll close my eyes and I'll be right back here
+The smoke, the laughter, and the sound of no fear
+And I'll tell the ones I love what I should've said then:
+That I saw it — every bit of it — amen
+
+[Outro]
+So let the good stay burning
+Let the reel keep turning
+We were golden, we were golden
+And the good's still burning
+(softly)
+And the good's still burning
+
+Specify the full production arc section-by-section, all instrumentation, and mixing priorities. The chorus should feel like an Avicii-style euphoric build releasing into something tender — bluegrass authenticity meets progressive house emotion.
+
+Output as a single JSON object in a ```json code block.

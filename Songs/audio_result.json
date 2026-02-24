@@ -1,0 +1,21 @@
+{
+  "data": {
+    "audio": "https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/music%2Fprod%2Ftts-20260224040721-yadSDWPeRarNbAuc.mp3?Expires=1771963648&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=jpuy0Y8QRwfDFCAFFmQ9EEvvE8o%3D",
+    "status": 2
+  },
+  "trace_id": "05ebe60b6fe85d396d6ba1e0b6f7f4e5",
+  "extra_info": {
+    "music_duration": 147226,
+    "music_sample_rate": 44100,
+    "music_channel": 2,
+    "bitrate": 256000,
+    "music_size": 4717970
+  },
+  "analysis_info": null,
+  "base_resp": {
+    "status_code": 0,
+    "status_msg": "success"
+  },
+  "audio_url": "https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/music%2Fprod%2Ftts-20260224040721-yadSDWPeRarNbAuc.mp3?Expires=1771963648&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=jpuy0Y8QRwfDFCAFFmQ9EEvvE8o%3D",
+  "provider": "MiniMax"
+}

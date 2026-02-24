@@ -1,0 +1,22 @@
+Write a complete original song with these qualities:
+
+FEEL & MOOD
+- Hopeful, soulful, guitar-based
+- Half melancholy, half bursting with youth and living in the moment
+- The bittersweet ache of not wanting beautiful moments to pass
+
+THEMES
+- Youth, joy, and family
+- Time moving too fast
+- A memory being lived in real time
+
+SONG STRUCTURE (in order)
+Verse 1 → Pre-Chorus → Chorus → Verse 2 → Pre-Chorus → Chorus → Bridge → Outro
+
+TARGET DURATION: 3.5 – 4 minutes at the chosen BPM
+
+VOCAL STYLE HINT (for chord/key choices)
+The lead will blend Dan Tyminski's raw bluegrass tenor with Aloe Blacc's soulful warmth.
+Write in a key that suits a warm, aching mid-tenor voice.
+
+Output the complete song as a JSON object in a ```json code block.

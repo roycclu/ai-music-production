@@ -1,45 +1,36 @@
-All chords notated per bar (4 beats each). Capo optional at 2nd fret to play in G shapes.
+=== INTRO (8 bars — fingerpicked, let each chord ring) ===
+| G | D/F# | Em7 | Cadd9 | G | D/F# | Em7 | Cadd9 |
 
-=== INTRO (4 bars — fingerpicked, let notes ring) ===
-| A        | E/G#     | F#m7     | Dsus2    |
+=== VERSE 1 (16 bars — pattern repeats 4x, two lyric lines per pass) ===
+| G | D/F# | Em7 | Cadd9 |
+| G | D/F# | Em7 | Cadd9 |
+| G | D/F# | Em7 | Cadd9 |
+| G | D/F# | Em7 | Cadd9 |
 
-=== VERSE 1 (16 bars — two passes of the 8-bar pattern) ===
-| A        | E/G#     | F#m7     | Dsus2    |
-| A        | E/G#     | Dsus2    | E        |
-| A        | E/G#     | F#m7     | Dsus2    |
-| A        | E/G#     | Dsus2    | E        |
+=== PRE-CHORUS (8 bars) ===
+| Am7 | Cadd9 | G | D |
+| Am7 | Cadd9 | Dsus4 | D |
 
-=== PRE-CHORUS (8 bars — bring in light palm-muted strum) ===
-| F#m7     | Dsus2    | A        | E        |
-| F#m7     | Dsus2    | Esus4    | E        |
+=== CHORUS (8 bars — open strumming, let it breathe) ===
+| Cadd9 | G | D | Em7 |
+| Cadd9 | G | Dsus4 | D |
 
-=== CHORUS (16 bars — open strumming, full voice) ===
-| A        | E/G#     | F#m7     | Dsus2    |
-| A        | E/G#     | Dsus2    | E        |
-| F#m7     | Dsus2    | A        | E/G#     |
-| Dsus2    | Esus4  E | A        | A        |
+=== VERSE 2 (16 bars — same as Verse 1, add light strumming) ===
+| G | D/F# | Em7 | Cadd9 | (x4)
 
-=== VERSE 2 (16 bars — same as Verse 1, add subtle bass walk) ===
-| A        | E/G#     | F#m7     | Dsus2    |
-| A        | E/G#     | Dsus2    | E        |
-| A        | E/G#     | F#m7     | Dsus2    |
-| A        | E/G#     | Dsus2    | E        |
+=== PRE-CHORUS (8 bars — same as before) ===
+| Am7 | Cadd9 | G | D |
+| Am7 | Cadd9 | Dsus4 | D |
 
-=== PRE-CHORUS 2 (8 bars) ===
-| F#m7     | Dsus2    | A        | E        |
-| F#m7     | Dsus2    | Esus4    | E        |
+=== CHORUS (8 bars — full band, more drive) ===
+| Cadd9 | G | D | Em7 |
+| Cadd9 | G | Dsus4 | D |
 
-=== CHORUS 2 (16 bars — same as Chorus 1, stronger dynamics) ===
-| A        | E/G#     | F#m7     | Dsus2    |
-| A        | E/G#     | Dsus2    | E        |
-| F#m7     | Dsus2    | A        | E/G#     |
-| Dsus2    | Esus4  E | A        | A        |
+=== BRIDGE (8 bars — strip back, build slowly) ===
+| Am | Em | Cadd9 | G/B |
+| Am | Cadd9 | Dsus4 | D |
 
-=== BRIDGE (8 bars — strip to bare fingerpicking, vocals exposed) ===
-| Dsus2    | A/C#     | F#m7     | E        |
-| Dsus2    | A/C#     | Esus4    | E        |
-
-=== OUTRO (12 bars — gentle strum fading to fingerpick, ritardando final 4 bars) ===
-| A        | E/G#     | F#m7     | Dsus2    |
-| A        | E/G#     | F#m7     | Dsus2    |
-| A        | E/G#     | Dsus2    | A        |
+=== OUTRO (12 bars — deconstruct, return to fingerpicking) ===
+| Cadd9 | G | D | Em7 |
+| Cadd9 | G | Dsus4 | D |
+| G | D/F# | Em7 | Cadd9 (let ring, fade) |

@@ -63,6 +63,7 @@ load_dotenv()
 async def main(
     force: bool = False,
     force_song: bool = False,
+    force_production: bool = False,
     force_video: bool = False,
     interactive: bool = True,
 ) -> dict:
@@ -74,12 +75,14 @@ async def main(
     exist on disk (cache hit).
 
     Args:
-        force:        Regenerate all four stages regardless of cache.
-        force_song:   Regenerate agents 1–3 (songwriter, singer, producer).
-        force_video:  Regenerate agent 4 (video producer).
-        interactive:  When True (default), prompt the user before each cached
-                      stage so they can choose to regenerate selectively.
-                      Ignored when force=True.
+        force:            Regenerate all four stages regardless of cache.
+        force_song:       Regenerate agents 1–3 (songwriter, singer, producer).
+        force_production: Regenerate agent 3 only (music generation), reusing
+                          the cached outputs from agents 1 and 2.
+        force_video:      Regenerate agent 4 (video producer).
+        interactive:      When True (default), prompt the user before each cached
+                          stage so they can choose to regenerate selectively.
+                          Ignored when force=True.
 
     Returns the compiled final deliverable package.
     """
@@ -90,12 +93,13 @@ async def main(
 
     # ── Interactive selective-regeneration prompts ─────────────────────────────
     if not force and interactive:
-        _force_song, _force_video = _prompt_regeneration()
-        force_song  = force_song  or _force_song
-        force_video = force_video or _force_video
+        _force_production, _force_video = _prompt_regeneration()
+        force_production = force_production or _force_production
+        force_video      = force_video      or _force_video
 
-    redo_song  = force or force_song
-    redo_video = force or force_video
+    redo_song       = force or force_song
+    redo_production = force or force_song or force_production
+    redo_video      = force or force_video
 
     client = anthropic.AsyncAnthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
@@ -131,7 +135,7 @@ async def main(
         )
 
     # ── Agent 3 — Music Producer ───────────────────────────────────────────────
-    if not redo_song and production_cache_valid():
+    if not redo_production and production_cache_valid():
         production_data = load_production_cache()
         _print_cache_hit("Agent 3 — Music Producer", "Songs/production_brief.json + audio_url.txt")
     else:
@@ -237,13 +241,17 @@ def _compile_package(
 
 def _prompt_regeneration() -> tuple[bool, bool]:
     """
-    Ask the user whether to regenerate the song and/or music video.
+    Ask the user whether to re-generate the music track and/or music video.
 
     Only prompts for stages that already have cached output — there is no
     point asking "redo?" when nothing has been produced yet.
 
+    Answering yes to the music question re-runs only Agent 3 (music
+    generation). Agents 1 and 2 (songwriter and singer) keep their cached
+    outputs, so their prompts and descriptions are preserved.
+
     Returns:
-        (force_song, force_video) — True means regenerate that group.
+        (force_production, force_video) — True means regenerate that stage.
     """
     song_cached  = melody_cache_valid() or vocals_cache_valid() or production_cache_valid()
     video_cached = video_cache_valid()
@@ -255,7 +263,7 @@ def _prompt_regeneration() -> tuple[bool, bool]:
     print("  PRODUCTION OPTIONS")
     print("─" * 60)
 
-    force_song = False
+    force_production = False
     if song_cached:
         cached = []
         if melody_cache_valid():
@@ -265,17 +273,18 @@ def _prompt_regeneration() -> tuple[bool, bool]:
         if production_cache_valid():
             cached.append("Songs")
         print(f"  Song cached:   {' + '.join(cached)}/")
-        ans = input("  Reproduce song (agents 1-3)?      [y/N] ").strip().lower()
-        force_song = ans in ("y", "yes")
+        print("  (Lyrics, chord chart, and vocal direction from agents 1-2 will be reused.)")
+        ans = input("  Re-generate music track (agent 3 only)?  [y/N] ").strip().lower()
+        force_production = ans in ("y", "yes")
 
     force_video = False
     if video_cached:
         print("  Video cached:  Music Video/")
-        ans = input("  Reproduce music video (agent 4)?  [y/N] ").strip().lower()
+        ans = input("  Reproduce music video (agent 4)?         [y/N] ").strip().lower()
         force_video = ans in ("y", "yes")
 
     print("─" * 60 + "\n")
-    return force_song, force_video
+    return force_production, force_video
 
 
 def _print_cache_hit(label: str, files: str) -> None:

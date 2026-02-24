@@ -1,0 +1,42 @@
+{
+  "song_title": "While the Light Holds",
+  "total_scenes": 6,
+  "timeline": [
+    {
+      "scene": 1,
+      "section": "Verse 1",
+      "duration": 30,
+      "url": "N/A"
+    },
+    {
+      "scene": 2,
+      "section": "Pre-Chorus",
+      "duration": 20,
+      "url": "N/A"
+    },
+    {
+      "scene": 3,
+      "section": "Chorus",
+      "duration": 35,
+      "url": "N/A"
+    },
+    {
+      "scene": 4,
+      "section": "Verse 2",
+      "duration": 30,
+      "url": "N/A"
+    },
+    {
+      "scene": 5,
+      "section": "Bridge",
+      "duration": 25,
+      "url": "N/A"
+    },
+    {
+      "scene": 6,
+      "section": "Outro",
+      "duration": 40,
+      "url": "N/A"
+    }
+  ]
+}

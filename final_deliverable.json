@@ -1,0 +1,91 @@
+{
+  "production_package": {
+    "title": "While the Light Holds",
+    "created_at": "2026-02-23T20:24:24.197360"
+  },
+  "song": {
+    "title": "While the Light Holds",
+    "key": "G major",
+    "bpm": 92,
+    "time_signature": "4/4",
+    "full_lyrics": {
+      "verse_1": "The screen door swings and the kids run out\nBarefoot through the grass with their arms flung wide\nThere's honey in the air and the day cools down\nAnd the first star's barely showing in a lavender sky\nYour mother's humming something old\nFrom the porch where the jasmine climbs\nAnd I swear I feel eternity\nFolded up inside this evening time",
+      "pre_chorus": "There's an ache beneath my ribs tonight\nLike my heart already knows\nThat the years will try to steal this\nBut I'm not letting go",
+      "chorus": "Let me live right here while the light holds\nLet me feel every second burning slow\nWith my arms around everything I know\nI'm staying right here while the light holds",
+      "verse_2": "Your daddy lifts his glass and says a prayer\nFor the mercy of an ordinary night\nThe little one's asleep against your chest\nHer hand wrapped 'round your finger holding tight\nAnd the radio through the window plays\nSome song we'll swear was always ours\nAnd I want to press this into stone\nEvery voice, every firefly, every star",
+      "bridge": "I know the morning's coming for these hours\nGonna scatter every shadow from this yard\nThese babies won't stay babies\nAnd time won't ask us if it's hard\nBut right now, Lord, right now\nThis is everything we are",
+      "outro": "Let me live right here while the light holds\nEvery second... burning slow\nStill golden, still ours\nWhile the light holds"
+    },
+    "chord_chart": "=== INTRO (8 bars — fingerpicked, let each chord ring) ===\n| G | D/F# | Em7 | Cadd9 | G | D/F# | Em7 | Cadd9 |\n\n=== VERSE 1 (16 bars — pattern repeats 4x, two lyric lines per pass) ===\n| G | D/F# | Em7 | Cadd9 |\n| G | D/F# | Em7 | Cadd9 |\n| G | D/F# | Em7 | Cadd9 |\n| G | D/F# | Em7 | Cadd9 |\n\n=== PRE-CHORUS (8 bars) ===\n| Am7 | Cadd9 | G | D |\n| Am7 | Cadd9 | Dsus4 | D |\n\n=== CHORUS (8 bars — open strumming, let it breathe) ===\n| Cadd9 | G | D | Em7 |\n| Cadd9 | G | Dsus4 | D |\n\n=== VERSE 2 (16 bars — same as Verse 1, add light strumming) ===\n| G | D/F# | Em7 | Cadd9 | (x4)\n\n=== PRE-CHORUS (8 bars — same as before) ===\n| Am7 | Cadd9 | G | D |\n| Am7 | Cadd9 | Dsus4 | D |\n\n=== CHORUS (8 bars — full band, more drive) ===\n| Cadd9 | G | D | Em7 |\n| Cadd9 | G | Dsus4 | D |\n\n=== BRIDGE (8 bars — strip back, build slowly) ===\n| Am | Em | Cadd9 | G/B |\n| Am | Cadd9 | Dsus4 | D |\n\n=== OUTRO (12 bars — deconstruct, return to fingerpicking) ===\n| Cadd9 | G | D | Em7 |\n| Cadd9 | G | Dsus4 | D |\n| G | D/F# | Em7 | Cadd9 (let ring, fade) |"
+  },
+  "vocals": {
+    "style": "A slow-burning Americana-soul hybrid that lives in the liminal space between bluegrass porch-song intimacy and deep-groove soul balladry. The vocal production should feel close and unhurried — like a voice captured three feet from a single condenser mic on a warm evening, with just enough room tone to feel alive. No auto-tune, no pitch correction — every scoop, every grain, every micro-crack is the performance. The overall arc moves from whispered storytelling through full-chested gratitude into raw emotional exposure, then resolves in a bittersweet glow. Think of the vocal as golden hour itself: warm, long-shadowed, luminous, and quietly aware that the light is temporary.",
+    "audio_url": "https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/music%2Fprod%2Ftts-20260223152027-EvEdZWgusMCurOmQ.mp3?Expires=1771917633&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=AF4QGzNCluoNNgPTNQ4PJ7qpKCE%3D"
+  },
+  "production": {
+    "style": "A slow-burning Americana-soul ballad fused with progressive-electronic architecture — the song lives in the liminal space between a Jason Isbell front-porch fingerpick and an Avicii festival sunrise moment. The acoustic core is never betrayed: Travis-picked guitar, natural room tone, and bluegrass vocal grain remain the emotional spine throughout. But the electronic elements — warm analog synth pads, a four-on-the-floor kick that enters like a heartbeat becoming conscious of itself, shimmering sidechain compression on the chorus pad, and a string arrangement that swells like golden hour light spreading across a field — lift the song from intimate to anthemic without ever feeling synthetic. The production philosophy is 'campfire to cathedral': every element that enters serves the emotional crescendo, and every element that exits serves the vulnerability. The mix should feel like you're sitting three feet from the singer in Verse 1 and standing in an open field with your arms out by Chorus 2. The final whispered line should feel like the field is empty and the stars are out and someone is walking away still humming.",
+    "instrumentation": [
+      "acoustic guitar — Martin D-28 or similar dreadnought, fingerpicked Travis-style in verses, open folk strum in choruses, capo 2 playing G shapes",
+      "banjo — open-back clawhammer, enters Pre-Chorus 1 with sparse melodic fills, rolls gently under Chorus 1, fuller arpeggiated rolls in Chorus 2, absent in Bridge, returns in Outro with single tremolo notes",
+      "kick drum — deep, warm, analog-style 808-meets-Nashville kick, pillowy low end around 55-65 Hz, enters as a subtle pulse in Verse 2 (quarter notes), becomes a confident four-on-the-floor in Chorus 2, sidechains the synth pad for that Avicii pump-and-breathe feel",
+      "snare/clap — layered organic snare (brush hit) with a soft electronic clap, enters Pre-Chorus 1 on beats 2 and 4, opens to a fuller crack in Chorus 2",
+      "hi-hat — programmed but humanized closed hat, 8th notes beginning in Pre-Chorus 1, opens slightly on the and-of-4 in choruses for swing, removed in Bridge",
+      "synth pad — warm analog polysynth (Juno-106 or Prophet-style), long-release A-major chord wash, enters as a barely-perceptible bed in Pre-Chorus 1, swells to full harmonic cushion in Chorus 2, filtered sweep rising through pre-choruses for the Avicii-style anticipation build, sidechain-compressed to kick in choruses for rhythmic breathing",
+      "sub-bass — sine-wave sub following root notes, enters Verse 2 mirroring the guitar bass walk (A-G#-F#-D), becomes a foundational low-end anchor in choruses, rolled off below 30 Hz to keep headroom clean",
+      "bass guitar — warm fingerstyle electric bass (P-bass with flatwounds), plays the descending walk A-G#-F#-D in Verse 2, locks with kick in choruses on root-fifth patterns, drops out entirely in Bridge",
+      "string section — arranged for viola, cello, and two violins; enters Chorus 1 with sustained whole-note pads on chord tones, expands to a counter-melody line (violin 1) in Chorus 2 that traces the vocal melody a third above during 'the years will ache to hold,' full ensemble crescendo on final 'burning gold' of Chorus 2, single sustained cello note (A2) under Bridge's 'amen,' gentle pizzicato arpeggios in Outro fading to nothing",
+      "pedal steel guitar — subtle, weeping fills between vocal phrases in Verse 2 and Chorus 2, adds Americana authenticity and emotional ache, mixed low and wet with plate reverb",
+      "tambourine — light shaker-style tambourine on 8th notes, enters Chorus 1 only, fuller in Chorus 2, hand-played feel with human inconsistency",
+      "atmospheric textures — field recording of summer evening (crickets, distant screen door, faint wind) layered at -30dB under Intro and Verse 1, fades by Pre-Chorus; vinyl crackle texture at -35dB under Bridge for intimacy; single reverse cymbal swell into each chorus entry"
+    ],
+    "final_track_url": "https://minimax-algeng-chat-tts-us.oss-us-east-1.aliyuncs.com/music%2Fprod%2Ftts-20260224040721-yadSDWPeRarNbAuc.mp3?Expires=1771963648&OSSAccessKeyId=LTAI5tCpJNKCf5EkQHSuL9xg&Signature=jpuy0Y8QRwfDFCAFFmQ9EEvvE8o%3D"
+  },
+  "video": {
+    "treatment": "The Good Still Burning is a film about time — not the clock kind, but the kind you feel in your chest when you watch your daughter spin in the same yard where your mother once hung laundry. We open on a real place: a clapboard farmhouse in middle Tennessee, late July, the hour when the sun turns everything it touches into something holy. Our subjects are a real family across three generations — a grandmother with deep-set eyes and hands that have kneaded ten thousand biscuits, a mother in her late thirties whose laughter comes easily and whose face carries the first honest lines of living, a little girl of five or six with a crooked grin she inherited like heirloom silver, and a man — the singer, the rememberer — who sits on the porch with a guitar and watches all of it like someone trying to memorize a room before the lights go out.\n\nThe entire film is shot as if discovered in a shoebox — Super 8 footage interspersed with moments of startling 16mm clarity, as though memory itself has a rack focus. We never see a modern object. No phones, no cars newer than 1985. Time is deliberately ambiguous: is this 1978 or last Tuesday? The answer is both. The camera is never acknowledged. It drifts through the backyard like a ghost who loved these people, catching a hand squeezing a shoulder, a mouth open mid-laugh, bare feet in clover. The emotional architecture mirrors the song exactly — we begin in the intimacy of a single porch and expand outward until the chorus feels like the whole golden world is singing, then we strip everything away in the bridge until it's just one man's face and the terrifying beauty of knowing that all of this will end.\n\nThe final image should break your heart gently: the porch, the empty chair, the guitar leaning against the railing, the last light of the day pulling its gold off the wood and leaving it blue. The screen goes dark while the string is still ringing.",
+    "total_scenes": 6,
+    "timeline": [
+      {
+        "scene": 1,
+        "section": "Verse 1",
+        "duration": 30,
+        "url": "N/A"
+      },
+      {
+        "scene": 2,
+        "section": "Pre-Chorus",
+        "duration": 20,
+        "url": "N/A"
+      },
+      {
+        "scene": 3,
+        "section": "Chorus",
+        "duration": 35,
+        "url": "N/A"
+      },
+      {
+        "scene": 4,
+        "section": "Verse 2",
+        "duration": 30,
+        "url": "N/A"
+      },
+      {
+        "scene": 5,
+        "section": "Bridge",
+        "duration": 25,
+        "url": "N/A"
+      },
+      {
+        "scene": 6,
+        "section": "Outro",
+        "duration": 40,
+        "url": "N/A"
+      }
+    ]
+  },
+  "output_directories": {
+    "Melodies": "/home/roy/music_video_pipeline/Melodies",
+    "Vocals": "/home/roy/music_video_pipeline/Vocals",
+    "Songs": "/home/roy/music_video_pipeline/Songs",
+    "Music Video": "/home/roy/music_video_pipeline/Music Video"
+  }
+}
