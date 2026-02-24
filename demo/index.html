@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Music Pipeline — Demo</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0b0a08;
+      --surface:      #111009;
+      --card:         #1c1912;
+      --card-hover:   #23201a;
+      --card-active:  #2a261d;
+      --border:       #2b2720;
+      --border-light: #3a3428;
+      --accent:       #d4a058;
+      --accent-glow:  rgba(212,160,88,0.12);
+      --accent-dim:   #8a6437;
+      --text:         #f0ead8;
+      --text-2:       #9a8f7e;
+      --text-3:       #5e5750;
+      --progress-bg:  #2b2720;
+      --radius:       8px;
+      --radius-sm:    5px;
+    }
+
+    html { font-size: 16px; scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100dvh;
+    }
+
+    /* ── Header ─────────────────────────────────────────────────────────── */
+    header {
+      padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .h-brand h1 {
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+
+    .h-brand p {
+      font-size: 0.72rem;
+      color: var(--text-3);
+      margin-top: 0.1rem;
+    }
+
+    .h-link a {
+      font-size: 0.75rem;
+      color: var(--text-3);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .h-link a:hover { color: var(--text-2); }
+
+    /* ── Layout ──────────────────────────────────────────────────────────── */
+    .layout {
+      display: flex;
+      min-height: calc(100dvh - 65px);
+    }
+
+    /* ── Sidebar ─────────────────────────────────────────────────────────── */
+    #sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      padding: 1.25rem 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      padding: 0 1.25rem 0.625rem;
+    }
+
+    .track-card {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.8rem 1.25rem;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .track-card:hover  { background: var(--card-hover); }
+    .track-card.active { background: var(--card-active); border-left-color: var(--accent); }
+
+    .tc-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      border: 1px solid var(--border-light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      transition: background 0.12s, border-color 0.12s;
+    }
+    .track-card.active .tc-icon {
+      background: var(--accent-glow);
+      border-color: var(--accent-dim);
+    }
+
+    .tc-info { min-width: 0; }
+
+    .tc-title {
+      font-size: 0.82rem;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tc-meta {
+      font-size: 0.68rem;
+      color: var(--text-3);
+      margin-top: 0.08rem;
+    }
+
+    /* ── Main pane ───────────────────────────────────────────────────────── */
+    #main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Track header ────────────────────────────────────────────────────── */
+    #track-header {
+      padding: 2rem 2.25rem 1.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #track-title {
+      font-size: 1.9rem;
+      font-weight: 300;
+      font-style: italic;
+      letter-spacing: -0.025em;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    #track-tagline {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      margin-bottom: 1rem;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .badge {
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.65rem;
+      border-radius: 100px;
+      background: var(--card);
+      border: 1px solid var(--border-light);
+      color: var(--text-2);
+    }
+
+    /* ── Player ──────────────────────────────────────────────────────────── */
+    #player {
+      padding: 1.5rem 2.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .source-toggle {
+      display: flex;
+      gap: 0.4rem;
+      margin-bottom: 1.125rem;
+    }
+
+    .src-btn {
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 0.28rem 0.8rem;
+      border-radius: 100px;
+      border: 1px solid var(--border-light);
+      background: transparent;
+      color: var(--text-2);
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .src-btn:hover { background: var(--card); color: var(--text); }
+    .src-btn.active { background: var(--accent-glow); border-color: var(--accent-dim); color: var(--accent); }
+
+    audio { display: none; }
+
+    .player-row {
+      display: flex;
+      align-items: center;
+      gap: 1.125rem;
+    }
+
+    .play-btn {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #0b0a08;
+      transition: background 0.12s, transform 0.08s;
+    }
+    .play-btn:hover   { background: #dfaf6a; }
+    .play-btn:active  { transform: scale(0.93); }
+    .play-btn svg     { width: 20px; height: 20px; fill: currentColor; }
+    .play-btn:disabled { opacity: 0.4; cursor: default; }
+
+    .progress-wrap { flex: 1; min-width: 0; }
+
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: var(--progress-bg);
+      border-radius: 2px;
+      cursor: pointer;
+      position: relative;
+      margin-bottom: 0.45rem;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 2px;
+      pointer-events: none;
+      transition: width 0.1s linear;
+    }
+    .progress-bar:hover .progress-fill { background: #dfaf6a; }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Audio status banner */
+    #audio-status {
+      display: none;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.78rem;
+      color: var(--text-2);
+      margin-top: 0.875rem;
+    }
+    #audio-status.show { display: flex; }
+
+    .s-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--text-3);
+      flex-shrink: 0;
+    }
+    .s-dot.loading { background: var(--accent); animation: blink 1.1s ease infinite; }
+    .s-dot.error   { background: #c0604a; }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.25; }
+    }
+
+    /* ── Tabs ────────────────────────────────────────────────────────────── */
+    #content { flex: 1; display: flex; flex-direction: column; }
+
+    .tab-nav {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid var(--border);
+      padding: 0 2.25rem;
+    }
+
+    .tab-btn {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      color: var(--text-2);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 0.875rem 0;
+      margin-right: 1.75rem;
+      cursor: pointer;
+      transition: color 0.12s, border-color 0.12s;
+    }
+    .tab-btn:hover       { color: var(--text); }
+    .tab-btn.active      { color: var(--accent); border-bottom-color: var(--accent); }
+
+    .tab-pane            { display: none; padding: 2rem 2.25rem; }
+    .tab-pane.active     { display: block; }
+
+    /* ── Lyrics ──────────────────────────────────────────────────────────── */
+    .lyric-block        { margin-bottom: 1.625rem; }
+
+    .lyric-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-dim);
+      margin-bottom: 0.4rem;
+    }
+
+    .lyric-lines {
+      font-size: 0.92rem;
+      line-height: 1.85;
+      color: var(--text-2);
+    }
+    .lyric-lines p { margin: 0; }
+
+    /* ── Production Notes ────────────────────────────────────────────────── */
+    .prod-style {
+      font-size: 0.875rem;
+      color: var(--text-2);
+      line-height: 1.75;
+      border-left: 2px solid var(--accent-dim);
+      padding-left: 1rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .section-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.75rem;
+    }
+
+    .inst-list {
+      list-style: none;
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
+    }
+
+    .inst-item {
+      display: flex;
+      align-items: baseline;
+      gap: 0.875rem;
+      font-size: 0.82rem;
+    }
+
+    .inst-name {
+      font-weight: 500;
+      color: var(--text);
+      min-width: 150px;
+      flex-shrink: 0;
+    }
+
+    .inst-role { color: var(--text-2); }
+
+    .prod-note {
+      font-size: 0.82rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+
+    /* ── About ───────────────────────────────────────────────────────────── */
+    .about-block        { margin-bottom: 1.5rem; }
+
+    .about-block h3 {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 0.5rem;
+    }
+
+    .about-block p {
+      font-size: 0.845rem;
+      color: var(--text-2);
+      line-height: 1.7;
+    }
+    .about-block p + p { margin-top: 0.5rem; }
+
+    .credits-list { list-style: none; display: grid; gap: 0.35rem; }
+
+    .credit-item {
+      font-size: 0.8rem;
+      display: flex;
+      gap: 0.875rem;
+    }
+
+    .credit-role { color: var(--text-3); min-width: 110px; }
+    .credit-val  { color: var(--text-2); }
+
+    .pipeline-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--text-2);
+      margin-top: 0.5rem;
+    }
+
+    .pipeline-step {
+      background: var(--card);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      padding: 0.2rem 0.65rem;
+      font-size: 0.72rem;
+      color: var(--text-2);
+    }
+
+    .pipeline-arrow { color: var(--text-3); font-size: 0.7rem; }
+
+    /* ── Footer ──────────────────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 1.25rem;
+      font-size: 0.72rem;
+      color: var(--text-3);
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--text-2); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── Empty / loading states ──────────────────────────────────────────── */
+    #no-track {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      gap: 0.5rem;
+      color: var(--text-3);
+      font-size: 0.85rem;
+    }
+
+    /* ── Responsive ──────────────────────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .layout { flex-direction: column; }
+
+      #sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 0.75rem 0;
+        overflow-x: auto;
+        overflow-y: hidden;
+        display: flex;
+        flex-direction: row;
+        gap: 0;
+      }
+      .sidebar-label { display: none; }
+      .track-card {
+        flex-direction: row;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        min-width: 200px;
+        padding: 0.75rem 1rem;
+      }
+      .track-card.active { border-bottom-color: var(--accent); }
+
+      header        { padding: 1.25rem 1.25rem; }
+      #track-header { padding: 1.5rem 1.25rem 1.25rem; }
+      #player       { padding: 1.25rem 1.25rem; }
+      .tab-nav      { padding: 0 1.25rem; }
+      .tab-pane     { padding: 1.5rem 1.25rem; }
+      #track-title  { font-size: 1.45rem; }
+      .inst-name    { min-width: 120px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="h-brand">
+      <h1>AI Music Pipeline</h1>
+      <p>Songs written, arranged &amp; produced by multi-agent AI</p>
+    </div>
+    <div class="h-link" id="gh-link"></div>
+  </header>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside id="sidebar">
+      <div class="sidebar-label">Tracks</div>
+      <div id="track-list"><span style="padding:1rem;color:var(--text-3);font-size:0.8rem">Loading…</span></div>
+    </aside>
+
+    <!-- Main -->
+    <div id="main">
+      <!-- Track header -->
+      <div id="track-header">
+        <h2 id="track-title">Select a track</h2>
+        <p id="track-tagline"></p>
+        <div class="badges" id="track-badges"></div>
+      </div>
+
+      <!-- Player -->
+      <div id="player">
+        <div class="source-toggle" id="source-toggle"></div>
+        <audio id="audio-el" preload="metadata"></audio>
+        <div class="player-row">
+          <button class="play-btn" id="play-btn" aria-label="Play/Pause" disabled>
+            <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </button>
+          <div class="progress-wrap">
+            <div class="progress-bar" id="progress-bar" role="slider" aria-label="Seek">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="time-row">
+              <span id="time-current">0:00</span>
+              <span id="time-total">0:00</span>
+            </div>
+          </div>
+        </div>
+        <div id="audio-status">
+          <div class="s-dot" id="s-dot"></div>
+          <span id="s-text"></span>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div id="content">
+        <div class="tab-nav">
+          <button class="tab-btn active" data-tab="lyrics">Lyrics</button>
+          <button class="tab-btn" data-tab="production">Production Notes</button>
+          <button class="tab-btn" data-tab="about">About</button>
+        </div>
+        <div id="tab-lyrics"     class="tab-pane active"></div>
+        <div id="tab-production" class="tab-pane"></div>
+        <div id="tab-about"      class="tab-pane"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Produced by <a href="https://github.com/anthropics/claude-code">AI Music Pipeline</a> · Powered by Claude Opus</p>
+  </footer>
+
+  <script>
+    'use strict';
+
+    // ── State ──────────────────────────────────────────────────────────────
+    let tracks       = [];
+    let currentTrack = null;
+    let currentSrc   = 'produced_track';  // 'produced_track' | 'vocal_track'
+    const audio      = document.getElementById('audio-el');
+
+    // ── Utilities ──────────────────────────────────────────────────────────
+    function fmtTime(s) {
+      if (!s || !isFinite(s)) return '0:00';
+      const m = Math.floor(s / 60);
+      const sec = String(Math.floor(s % 60)).padStart(2, '0');
+      return `${m}:${sec}`;
+    }
+
+    function fmtDate(str) {
+      if (!str) return '';
+      const d = new Date(str + 'T12:00:00Z');
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+    }
+
+    function esc(str) {
+      const d = document.createElement('div');
+      d.textContent = str;
+      return d.innerHTML;
+    }
+
+    // ── Render track list ─────────────────────────────────────────────────
+    function renderTrackList() {
+      const list = document.getElementById('track-list');
+      list.innerHTML = '';
+      tracks.forEach(track => {
+        const el = document.createElement('div');
+        el.className = 'track-card' + (currentTrack?.id === track.id ? ' active' : '');
+        el.innerHTML = `
+          <div class="tc-icon">♪</div>
+          <div class="tc-info">
+            <div class="tc-title">${esc(track.title)}</div>
+            <div class="tc-meta">${esc(track.genre || '')}</div>
+          </div>
+        `;
+        el.addEventListener('click', () => selectTrack(track));
+        list.appendChild(el);
+      });
+    }
+
+    // ── Select track ──────────────────────────────────────────────────────
+    function selectTrack(track) {
+      currentTrack = track;
+      currentSrc   = 'produced_track';
+      renderTrackList();
+      renderHeader();
+      renderSourceToggle();
+      renderLyrics();
+      renderProduction();
+      renderAbout();
+      loadAudio();
+    }
+
+    // ── Track header ──────────────────────────────────────────────────────
+    function renderHeader() {
+      const t = currentTrack;
+      document.getElementById('track-title').textContent   = `"${t.title}"`;
+      document.getElementById('track-tagline').textContent = t.tagline || '';
+
+      const bits = [t.genre, t.key, t.bpm ? `${t.bpm} BPM` : null, t.time_signature, fmtDate(t.created)];
+      document.getElementById('track-badges').innerHTML =
+        bits.filter(Boolean).map(b => `<span class="badge">${esc(b)}</span>`).join('');
+    }
+
+    // ── Source toggle ─────────────────────────────────────────────────────
+    function renderSourceToggle() {
+      const wrap = document.getElementById('source-toggle');
+      wrap.innerHTML = '';
+      const sources = [
+        { key: 'produced_track', label: 'Produced Track' },
+        { key: 'vocal_track',    label: 'Vocal Only' },
+      ];
+      sources.forEach(({ key, label }) => {
+        if (!currentTrack.files[key]) return;
+        const btn = document.createElement('button');
+        btn.className = 'src-btn' + (currentSrc === key ? ' active' : '');
+        btn.textContent = label;
+        btn.addEventListener('click', () => {
+          currentSrc = key;
+          renderSourceToggle();
+          loadAudio();
+        });
+        wrap.appendChild(btn);
+      });
+    }
+
+    // ── Audio ─────────────────────────────────────────────────────────────
+    function loadAudio() {
+      const src = currentTrack?.files?.[currentSrc];
+      if (!src) return;
+
+      setStatus('loading', 'Loading audio…');
+      const wasPlaying = !audio.paused;
+      audio.pause();
+      audio.src = src;
+      audio.load();
+      setPlayIcon(false);
+      document.getElementById('progress-fill').style.width = '0%';
+      document.getElementById('time-current').textContent = '0:00';
+      document.getElementById('time-total').textContent   = '0:00';
+      document.getElementById('play-btn').disabled = true;
+
+      if (wasPlaying) {
+        audio.addEventListener('canplay', () => audio.play().catch(() => {}), { once: true });
+      }
+    }
+
+    function setStatus(type, msg) {
+      const el  = document.getElementById('audio-status');
+      const dot = document.getElementById('s-dot');
+      const txt = document.getElementById('s-text');
+      if (!msg) { el.classList.remove('show'); return; }
+      el.classList.add('show');
+      dot.className = 's-dot' + (type === 'loading' ? ' loading' : type === 'error' ? ' error' : '');
+      txt.textContent = msg;
+    }
+
+    function setPlayIcon(playing) {
+      document.getElementById('play-icon').innerHTML = playing
+        ? '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>'
+        : '<path d="M8 5v14l11-7z"/>';
+    }
+
+    document.getElementById('play-btn').addEventListener('click', () => {
+      if (!audio.src) return;
+      if (audio.paused) audio.play().catch(e => console.warn(e));
+      else              audio.pause();
+    });
+
+    audio.addEventListener('play',   () => setPlayIcon(true));
+    audio.addEventListener('pause',  () => setPlayIcon(false));
+    audio.addEventListener('ended',  () => setPlayIcon(false));
+
+    audio.addEventListener('canplay', () => {
+      setStatus(null, null);
+      document.getElementById('play-btn').disabled = false;
+    });
+
+    audio.addEventListener('error', () => {
+      if (!audio.src || audio.src === window.location.href) return;
+      setStatus('error', 'Audio file not yet uploaded. Add the mp3 to demo/tracks/' + currentTrack.id + '/ to enable playback.');
+      setPlayIcon(false);
+      document.getElementById('play-btn').disabled = true;
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      if (!audio.duration) return;
+      const pct = (audio.currentTime / audio.duration) * 100;
+      document.getElementById('progress-fill').style.width = pct + '%';
+      document.getElementById('time-current').textContent = fmtTime(audio.currentTime);
+      document.getElementById('time-total').textContent   = fmtTime(audio.duration);
+    });
+
+    audio.addEventListener('loadedmetadata', () => {
+      document.getElementById('time-total').textContent = fmtTime(audio.duration);
+    });
+
+    // Seek
+    document.getElementById('progress-bar').addEventListener('click', e => {
+      if (!audio.duration) return;
+      const r = e.currentTarget.getBoundingClientRect();
+      audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+    });
+
+    // ── Tabs ──────────────────────────────────────────────────────────────
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // ── Lyrics ────────────────────────────────────────────────────────────
+    function renderLyrics() {
+      const el = document.getElementById('tab-lyrics');
+      const t  = currentTrack;
+      if (!t.lyrics?.length) {
+        el.innerHTML = '<p style="color:var(--text-3)">No lyrics available.</p>';
+        return;
+      }
+      el.innerHTML = t.lyrics.map(block => `
+        <div class="lyric-block">
+          <div class="lyric-label">${esc(block.section)}</div>
+          <div class="lyric-lines">${block.lines.map(l => `<p>${esc(l)}</p>`).join('')}</div>
+        </div>
+      `).join('');
+    }
+
+    // ── Production Notes ──────────────────────────────────────────────────
+    function renderProduction() {
+      const el = document.getElementById('tab-production');
+      const p  = currentTrack.production;
+      if (!p) { el.innerHTML = '<p style="color:var(--text-3)">No production notes available.</p>'; return; }
+
+      const instrHtml = p.instrumentation?.length ? `
+        <div class="section-label">Instrumentation</div>
+        <ul class="inst-list">
+          ${p.instrumentation.map(i => `
+            <li class="inst-item">
+              <span class="inst-name">${esc(i.name)}</span>
+              <span class="inst-role">${esc(i.role)}</span>
+            </li>
+          `).join('')}
+        </ul>
+      ` : '';
+
+      const arcHtml = p.dynamic_arc ? `
+        <div class="section-label">Dynamic Arc</div>
+        <p class="prod-note">${esc(p.dynamic_arc)}</p>
+      ` : '';
+
+      const mixHtml = p.mixing_philosophy ? `
+        <div class="section-label" style="margin-top:1.25rem">Mix Philosophy</div>
+        <p class="prod-note">${esc(p.mixing_philosophy)}</p>
+      ` : '';
+
+      el.innerHTML = `
+        <p class="prod-style">${esc(p.style)}</p>
+        ${instrHtml}
+        ${arcHtml}
+        ${mixHtml}
+      `;
+    }
+
+    // ── About ─────────────────────────────────────────────────────────────
+    function renderAbout() {
+      const el = document.getElementById('tab-about');
+      const t  = currentTrack;
+
+      const creditsHtml = t.credits ? `
+        <div class="about-block">
+          <h3>Credits</h3>
+          <ul class="credits-list">
+            ${Object.entries(t.credits).map(([role, val]) => `
+              <li class="credit-item">
+                <span class="credit-role">${esc(role)}</span>
+                <span class="credit-val">${esc(val)}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      ` : '';
+
+      el.innerHTML = `
+        <div class="about-block">
+          <h3>About This Track</h3>
+          <p>This song was created entirely by a multi-agent AI system. Four specialized Claude Opus agents collaborated in sequence — each building on the previous agent's output — to produce the complete work from scratch.</p>
+        </div>
+        ${creditsHtml}
+        <div class="about-block">
+          <h3>Production Pipeline</h3>
+          <div class="pipeline-steps">
+            <span class="pipeline-step">Songwriter Agent</span>
+            <span class="pipeline-arrow">→</span>
+            <span class="pipeline-step">Singer Agent</span>
+            <span class="pipeline-arrow">→</span>
+            <span class="pipeline-step">Music Producer Agent</span>
+            <span class="pipeline-arrow">→</span>
+            <span class="pipeline-step">Video Producer Agent</span>
+          </div>
+          <p style="margin-top:0.875rem;font-size:0.78rem;color:var(--text-3)">Each agent is powered by Claude Opus. Audio synthesis via MiniMax Music-01. Video generation via MiniMax Video-01.</p>
+        </div>
+      `;
+    }
+
+    // ── Bootstrap ─────────────────────────────────────────────────────────
+    fetch('./tracks.json')
+      .then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
+      .then(data => {
+        tracks = data.tracks || [];
+
+        // Optional: set GitHub link from site config
+        if (data.site?.github) {
+          document.getElementById('gh-link').innerHTML =
+            `<a href="${esc(data.site.github)}" target="_blank" rel="noopener">GitHub ↗</a>`;
+        }
+
+        renderTrackList();
+        if (tracks.length > 0) selectTrack(tracks[0]);
+        else document.getElementById('track-list').innerHTML =
+          '<span style="padding:1rem;color:var(--text-3);font-size:0.8rem">No tracks yet.</span>';
+      })
+      .catch(err => {
+        console.error('Failed to load tracks.json:', err);
+        document.getElementById('track-list').innerHTML =
+          '<span style="padding:1rem;color:var(--text-3);font-size:0.8rem">Could not load tracks.</span>';
+        // Hint for local file:// usage
+        if (location.protocol === 'file:') {
+          document.getElementById('main').innerHTML = `
+            <div style="padding:2rem;color:var(--text-2);font-size:0.85rem;line-height:1.7">
+              <p><strong style="color:var(--text)">Local file:// access detected.</strong></p>
+              <p style="margin-top:0.5rem">Browsers block fetch() from local files. To preview locally, serve the demo folder:</p>
+              <pre style="margin-top:0.75rem;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:0.875rem;font-size:0.8rem;overflow-x:auto">cd music_video_pipeline/demo
+python3 -m http.server 8080
+# then open http://localhost:8080</pre>
+            </div>
+          `;
+        }
+      });
+  </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+{
+  "site": {
+    "title": "AI Music Pipeline",
+    "subtitle": "Songs written, arranged & produced by multi-agent AI",
+    "description": "An experimental music production system where four AI agents collaborate: a Songwriter, a Singer, a Music Producer, and a Video Producer — each powered by Claude Opus."
+  },
+  "tracks": [
+    {
+      "id": "while-the-light-holds",
+      "title": "While the Light Holds",
+      "created": "2026-02-24",
+      "genre": "Americana · Folk-Electronic",
+      "key": "G major",
+      "bpm": 92,
+      "time_signature": "4/4",
+      "tagline": "A golden-hour meditation on family, memory, and time passing too fast.",
+      "files": {
+        "produced_track": "tracks/while-the-light-holds/song.mp3",
+        "vocal_track": "tracks/while-the-light-holds/vocal.mp3"
+      },
+      "credits": {
+        "Songwriter": "Claude Opus (AI Songwriter Agent)",
+        "Vocalist": "MiniMax Music-01 (AI Voice Synthesis)",
+        "Producer": "Claude Opus (AI Music Producer Agent)",
+        "Video": "MiniMax Video-01 (AI Video Generation)"
+      },
+      "lyrics": [
+        {
+          "section": "Verse 1",
+          "lines": [
+            "The screen door swings and the kids run out",
+            "Barefoot through the grass with their arms flung wide",
+            "There's honey in the air and the day cools down",
+            "And the first star's barely showing in a lavender sky",
+            "Your mother's humming something old",
+            "From the porch where the jasmine climbs",
+            "And I swear I feel eternity",
+            "Folded up inside this evening time"
+          ]
+        },
+        {
+          "section": "Pre-Chorus",
+          "lines": [
+            "There's an ache beneath my ribs tonight",
+            "Like my heart already knows",
+            "That the years will try to steal this",
+            "But I'm not letting go"
+          ]
+        },
+        {
+          "section": "Chorus",
+          "lines": [
+            "Let me live right here while the light holds",
+            "Let me feel every second burning slow",
+            "With my arms around everything I know",
+            "I'm staying right here while the light holds"
+          ]
+        },
+        {
+          "section": "Verse 2",
+          "lines": [
+            "Your daddy lifts his glass and says a prayer",
+            "For the mercy of an ordinary night",
+            "The little one's asleep against your chest",
+            "Her hand wrapped 'round your finger holding tight",
+            "And the radio through the window plays",
+            "Some song we'll swear was always ours",
+            "And I want to press this into stone",
+            "Every voice, every firefly, every star"
+          ]
+        },
+        {
+          "section": "Pre-Chorus",
+          "lines": [
+            "There's an ache beneath my ribs tonight",
+            "Like my heart already knows",
+            "That the years will try to steal this",
+            "But I'm not letting go"
+          ]
+        },
+        {
+          "section": "Chorus",
+          "lines": [
+            "Let me live right here while the light holds",
+            "Let me feel every second burning slow",
+            "With my arms around everything I know",
+            "I'm staying right here while the light holds"
+          ]
+        },
+        {
+          "section": "Bridge",
+          "lines": [
+            "I know the morning's coming for these hours",
+            "Gonna scatter every shadow from this yard",
+            "These babies won't stay babies",
+            "And time won't ask us if it's hard",
+            "But right now, Lord, right now",
+            "This is everything we are"
+          ]
+        },
+        {
+          "section": "Outro",
+          "lines": [
+            "Let me live right here while the light holds",
+            "Every second... burning slow",
+            "Still golden, still ours",
+            "While the light holds"
+          ]
+        }
+      ],
+      "production": {
+        "style": "A slow-burning Americana-soul ballad fused with progressive-electronic architecture — living in the liminal space between a Jason Isbell front-porch fingerpick and an Avicii festival sunrise moment. The acoustic core is never betrayed: Travis-picked guitar, natural room tone, and bluegrass vocal grain remain the emotional spine throughout. Electronic elements lift the song from intimate to anthemic without ever feeling synthetic. The production philosophy is 'campfire to cathedral.'",
+        "instrumentation": [
+          { "name": "Acoustic Guitar", "role": "Emotional spine — Travis-picked in verses, open folk strum in choruses, capo 2 playing G shapes" },
+          { "name": "Banjo", "role": "Open-back clawhammer, sparse melodic fills in pre-chorus, fuller rolls in chorus" },
+          { "name": "Kick Drum", "role": "Deep analog 808-meets-Nashville, four-on-the-floor in Chorus 2 with Avicii-style sidechain pump" },
+          { "name": "Synth Pad", "role": "Juno-106-style warm polysynth, low-pass filter sweep builds anticipation through pre-choruses" },
+          { "name": "String Section", "role": "Viola, cello, two violins — sustained pads in Chorus 1, soaring counter-melody in Chorus 2" },
+          { "name": "Bass Guitar", "role": "P-bass with flatwounds, walking descending line A→G#→F#→D, locks with kick in choruses" },
+          { "name": "Sub-Bass", "role": "Sine-wave foundation, sidechained to kick for rhythmic breathing" },
+          { "name": "Pedal Steel", "role": "Weeping fills between vocal phrases in Verse 2, drenched in plate reverb" },
+          { "name": "Snare / Clap", "role": "Organic brush snare layered with soft electronic clap, beats 2 and 4" },
+          { "name": "Hi-Hat", "role": "Humanized 8th notes with 58% swing, enters pre-chorus, opens in choruses" },
+          { "name": "Tambourine", "role": "Light 8th-note shimmer in choruses only, hand-played feel" },
+          { "name": "Atmospheric Textures", "role": "Summer evening field recording under Verse 1, vinyl crackle in bridge — subliminal warmth" }
+        ],
+        "dynamic_arc": "Campfire → Cathedral → Empty Field. The mix opens from naked voice-and-guitar in Verse 1 to full panoramic width in Chorus 2, then strips back to a single whispered line with no reverb at all in the Outro — shockingly intimate after the produced sections.",
+        "mixing_philosophy": "Verses are narrow and intimate — guitar and voice clustered in the center 30% of the stereo field. Choruses are panoramic, elements spread across the full field. The Bridge collapses to mono. The final whispered line gets no reverb. Target loudness: -11 LUFS, preserving 8–10 dB of dynamic range between bridge and chorus peaks."
+      }
+    }
+  ]
+}
